@@ -7,23 +7,35 @@ configure({adapter: new Adapter()});
 class App extends Component {
   constructor(){
     super();
-    this.firstName = React.createRef();
-    this.lastName = React.createRef();
     this.state = {
+      firstName: "",
+      lastName: "",
       guests: []
     }
   }
 
+  handleChangeFirstName(event){
+    this.setState({
+      firstName: event.target.value,
+    });
+  }
+
+  handleChangeLastName(event){
+    this.setState({
+      lastName: event.target.value
+    });
+  }
+
   handleSubmit(e){
+    e.preventDefault();
     let oldGuests = this.state.guests;
     let newGuest = {
-      name: this.firstName.current.value, 
-      lastName: this.lastName.current.value 
+      firstName: this.state.firstName, 
+      lastName: this.state.lastName
     }  
     this.setState({
       guests: [...oldGuests, newGuest]
     });
-    e.preventDefault();
   }
 
   render() {
@@ -35,7 +47,8 @@ class App extends Component {
               <div className="form-group">
                 <label htmlFor="first-name">Nombre</label>
                 <input
-                  ref={this.firstName}
+                  onChange={this.handleChangeFirstName.bind(this)}
+                  value={this.state.firstName}
                   type="text" 
                   className="form-control" 
                   name="first-name" />
@@ -44,7 +57,8 @@ class App extends Component {
               <div className="form-group">
                 <label htmlFor="last-name">Apellido</label>
                 <input
-                  ref={this.lastName}
+                  onChange={this.handleChangeLastName.bind(this)}
+                  value={this.state.lastName}
                   type="text" 
                   className="form-control" 
                   name="last-name" />
@@ -63,8 +77,11 @@ class App extends Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.guests.map((guest, index) =>
-                  <Row key={index} name={guest.name} lastName={guest.lastName} />
+              {this.state.guests.map((guest, index) =>
+                  <tr key={index}>
+                    <td>{guest.firstName}</td>
+                    <td>{guest.lastName}</td>
+                  </tr>
                 )}
               </tbody>
             </table>
@@ -73,20 +90,6 @@ class App extends Component {
       </div>
     )
   }
-}
-
-const Row = (props) => {
-  return(
-    <tr>
-      <td>{props.name}</td>
-      <td>{props.lastName}</td>
-    </tr>
-  );
-}
-
-Row.defaultProps = {
-  name: 'Marty',
-  lastName: 'McFly'    
 }
 
 export default App
